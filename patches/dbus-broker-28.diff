@@ -1,0 +1,26 @@
+diff --git a/src/broker/main.c b/src/broker/main.c
+index 292b2bb..a1727a6 100644
+--- a/src/broker/main.c
++++ b/src/broker/main.c
+@@ -244,7 +244,7 @@ static int setup(void) {
+          * possible exploits.
+          */
+         r = prctl(PR_CAP_AMBIENT, PR_CAP_AMBIENT_CLEAR_ALL, 0, 0, 0);
+-        if (r < 0)
++        if (r < 0 && errno != EINVAL)
+                 return error_origin(-errno);
+ 
+         return 0;
+diff --git a/src/util/audit.c b/src/util/audit.c
+index 1edbb28..d057b42 100644
+--- a/src/util/audit.c
++++ b/src/util/audit.c
+@@ -82,7 +82,7 @@ int util_audit_drop_permissions(uint32_t uid, uint32_t gid) {
+ 
+                 if (have_audit_write) {
+                         r = prctl(PR_CAP_AMBIENT, PR_CAP_AMBIENT_RAISE, CAP_AUDIT_WRITE, 0, 0);
+-                        if (r < 0)
++                        if (r < 0 && errno != EINVAL)
+                                 return error_origin(-errno);
+                 }
+         }
