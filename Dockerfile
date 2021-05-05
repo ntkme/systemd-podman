@@ -1,33 +1,4 @@
-FROM registry.fedoraproject.org/fedora-minimal:33
-
-ADD patches /patches
-
-RUN printf '%s\n' \
-           '[main]' \
-           'assumeyes=True' \
-           'install_weak_deps=False' \
-           'tsflags=nodocs' \
-  | tee /etc/dnf/dnf.conf \
- && microdnf install audit-libs-devel autoconf automake coreutils diffutils expat-devel file gcc libselinux-devel libtool make meson patch pkgconfig systemd-devel xz
-
-RUN curl -fsSL https://github.com/stevegrubb/libcap-ng/archive/v0.8.2.tar.gz | tar -xz \
- && cd libcap-ng-0.8.2 \
- && patch -p1 </patches/libcap-ng-0.8.2.diff \
- && ./autogen.sh \
- && ./configure --prefix=/usr --with-python=no --with-python3=no \
- && make \
- && make install
-
-RUN curl -fsSL https://github.com/bus1/dbus-broker/releases/download/v28/dbus-broker-28.tar.xz | tar -xJ \
- && cd dbus-broker-28 \
- && patch -p1 </patches/dbus-broker-28.diff \
- && mkdir build \
- && cd build \
- && meson -Dprefix=/usr -Dselinux=true -Daudit=true -Dsystem-console-users=gdm -Dlinux-4-17=true \
- && ninja \
- && ninja install
-
-FROM registry.fedoraproject.org/fedora-minimal:33
+FROM registry.fedoraproject.org/fedora-minimal:latest
 
 RUN printf '%s\n' \
            '[main]' \
@@ -87,24 +58,9 @@ RUN printf '%s\n' \
            '[Service]' \
            'Type=oneshot' \
            'RemainAfterExit=yes' \
-           'ExecStart=/usr/bin/sed -i -e '\''/^mount_program[[:space:]]*=/s/^/#/g'\'' -e '\''s/^mountopt[[:space:]]*=.*$/mountopt = "nodev"/g'\'' /etc/containers/storage.conf' \
+           'ExecStart=/usr/bin/sed -i -e '\''/^mount_program[[:space:]]*=/s/^/#/g'\'' -e '\''s/^mountopt[[:space:]]*=.*$/mountopt = "nodev,metacopy=on"/g'\'' /etc/containers/storage.conf' \
   | tee /lib/systemd/system/containers-storage-overlayfs.service \
  && ln -s ../containers-storage-overlayfs.service /lib/systemd/system/sysinit.target.wants/containers-storage-overlayfs.service \
- && printf '%s\n' \
-           '[Unit]' \
-           'DefaultDependencies=no' \
-           'Conflicts=shutdown.target' \
-           'After=local-fs.target containers-storage-overlayfs.service' \
-           'Before=sysinit.target shutdown.target' \
-           'RefuseManualStop=yes' \
-           'ConditionKernelVersion=>=4.19' \
-           'ConditionVirtualization=!private-users' \
-           '[Service]' \
-           'Type=oneshot' \
-           'RemainAfterExit=yes' \
-           'ExecStart=/usr/bin/sed -i -e '\''s/^mountopt[[:space:]]*=.*$/mountopt = "nodev,metacopy=on"/g'\'' /etc/containers/storage.conf' \
-  | tee /lib/systemd/system/containers-storage-overlayfs-metacopy.service \
- && ln -s ../containers-storage-overlayfs-metacopy.service /lib/systemd/system/sysinit.target.wants/containers-storage-overlayfs-metacopy.service \
  && printf '%s\n' \
            '[engine]' \
            'cgroup_manager = "cgroupfs"' \
@@ -134,9 +90,6 @@ RUN printf '%s\n' \
           /usr/local/share/containers/storage/overlay-layers/layers.lock \
           /usr/local/share/containers/storage/vfs-images/images.lock \
           /usr/local/share/containers/storage/vfs-layers/layers.lock
-
-COPY --from=0 /usr/lib64/libcap-ng.so.0.0.0 /usr/lib64/libcap-ng.so.0.0.0
-COPY --from=0 /usr/bin/dbus-broker /usr/bin/dbus-broker-launch /usr/bin/
 
 VOLUME ["/var/lib/containers"]
 

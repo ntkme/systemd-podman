@@ -32,5 +32,5 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/systemd-podman:latest,ghcr.io/${{ github.repository_owner }}/systemd-podman:legacy
+          tags: ghcr.io/${{ github.repository_owner }}/systemd-podman:latest
           platforms: linux/amd64,linux/arm64
