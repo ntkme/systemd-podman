@@ -65,7 +65,7 @@ RUN printf '%s\n' \
  && echo "- https://github.com/containers/podman/issues/11031" \
  && echo "- https://github.com/opencontainers/runc/pull/3109" \
  && echo "- https://github.com/containers/common/pull/573" \
- && curl -fsSLo /usr/share/containers/seccomp.json https://src.fedoraproject.org/rpms/containers-common/raw/0d80149246ad60574eccdac8442306393865b6ba/f/seccomp.json \
+ && rpm -U https://kojipkgs.fedoraproject.org//packages/runc/1.0.2/2.fc34/$(uname -m )/runc-1.0.2-2.fc34.$(uname -m).rpm \
  && printf '%s\n' \
            '[engine]' \
            'cgroup_manager = "cgroupfs"' \
