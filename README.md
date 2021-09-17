@@ -1,4 +1,4 @@
-# container-systemd-podman
+# systemd-podman
 
 ``` sh
 podman run -d \
@@ -6,5 +6,5 @@ podman run -d \
   --volume /sys/fs/cgroup:/sys/fs/cgroup:ro \
   --volume /mnt/data/etc/systemd/system:/etc/systemd/system \
   --volume /mnt/data/var/lib/containers:/var/lib/containers \
-  ghcr.io/ntkme/systemd-podman
+  ghcr.io/ntkme/systemd-podman:edge
 ```
