@@ -61,11 +61,6 @@ RUN printf '%s\n' \
            'ExecStart=/usr/bin/sed -i -e '\''/^mount_program[[:space:]]*=/s/^/#/g'\'' -e '\''s/^mountopt[[:space:]]*=.*$/mountopt = "nodev,metacopy=on"/g'\'' /etc/containers/storage.conf' \
   | tee /lib/systemd/system/containers-storage-overlayfs.service \
  && ln -s ../containers-storage-overlayfs.service /lib/systemd/system/sysinit.target.wants/containers-storage-overlayfs.service \
- && echo "Workaround for the following issues:" \
- && echo "- https://github.com/containers/podman/issues/11031" \
- && echo "- https://github.com/opencontainers/runc/pull/3109" \
- && echo "- https://github.com/containers/common/pull/573" \
- && rpm -U https://kojipkgs.fedoraproject.org//packages/runc/1.0.2/2.fc34/$(uname -m )/runc-1.0.2-2.fc34.$(uname -m).rpm \
  && printf '%s\n' \
            '[engine]' \
            'cgroup_manager = "cgroupfs"' \
