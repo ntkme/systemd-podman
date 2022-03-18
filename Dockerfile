@@ -14,6 +14,12 @@ RUN printf '%s\n' \
            'tsflags=nodocs' \
   | tee /etc/dnf/dnf.conf \
  && microdnf install podman \
+ && printf '%s\n' \
+           '[main]' \
+           'assumeyes=True' \
+           'install_weak_deps=False' \
+           'tsflags=nodocs' \
+  | tee /etc/dnf/dnf.conf \
  && microdnf install runc \
  && microdnf clean all \
  && rm -rf /etc/dnf/dnf.conf /var/cache/yum \
