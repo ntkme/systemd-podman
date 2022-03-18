@@ -14,6 +14,7 @@ RUN printf '%s\n' \
            'tsflags=nodocs' \
   | tee /etc/dnf/dnf.conf \
  && microdnf install podman \
+ && microdnf install runc \
  && microdnf clean all \
  && rm -rf /etc/dnf/dnf.conf /var/cache/yum \
  && ln -sf multi-user.target /lib/systemd/system/default.target \
