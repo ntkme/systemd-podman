@@ -7,7 +7,13 @@ RUN printf '%s\n' \
            'tsflags=nodocs' \
   | tee /etc/dnf/dnf.conf \
  && microdnf update \
- && microdnf install systemd podman podman-plugins fuse-overlayfs crun runc catatonit slirp4netns \
+ && microdnf install systemd \
+ && printf '%s\n' \
+           '[main]' \
+           'assumeyes=True' \
+           'tsflags=nodocs' \
+  | tee /etc/dnf/dnf.conf \
+ && microdnf install podman \
  && microdnf clean all \
  && rm -rf /etc/dnf/dnf.conf /var/cache/yum \
  && ln -sf multi-user.target /lib/systemd/system/default.target \
