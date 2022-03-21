@@ -1,4 +1,4 @@
-FROM registry.fedoraproject.org/fedora-minimal:35
+FROM registry.fedoraproject.org/fedora-minimal:36
 
 RUN printf '%s\n' \
            '[main]' \
@@ -74,11 +74,10 @@ RUN printf '%s\n' \
            'ExecStart=/usr/bin/sed -i -e '\''/^mount_program[[:space:]]*=/s/^/#/g'\'' -e '\''s/^mountopt[[:space:]]*=.*$/mountopt = "nodev,metacopy=on"/g'\'' /etc/containers/storage.conf' \
   | tee /lib/systemd/system/containers-storage-overlayfs.service \
  && ln -s ../containers-storage-overlayfs.service /lib/systemd/system/sysinit.target.wants/containers-storage-overlayfs.service \
- && printf '%s\n' \
-           '[engine]' \
-           'cgroup_manager = "cgroupfs"' \
-           'events_logger = "file"' \
-           'runtime = "crun"' \
+ && sed -e 's/^#cgroup_manager[[:space:]]*=.*$/cgroup_manager = "cgroupfs"/g' \
+        -e 's/^#events_logger[[:space:]]*=.*$/events_logger = "file"/g' \
+        -e 's/^#runtime[[:space:]]*=.*$/runtime = "crun"/g' \
+        /usr/share/containers/containers.conf \
   | tee /etc/containers/containers.conf \
  && sed -e '/^#mount_program[[:space:]]*=/s/^#//g' \
         -e 's/^mountopt[[:space:]]*=.*$/mountopt = "nodev,fsync=0"/g' \
@@ -86,7 +85,8 @@ RUN printf '%s\n' \
         -e 'a\ \ "/usr/share/containers/storage",' \
         -e 'a\ \ "/usr/local/share/containers/storage",' \
         -e '}' \
-        -i /etc/containers/storage.conf \
+        /usr/share/containers/storage.conf \
+  | tee /etc/containers/storage.conf \
  && mkdir -p /usr/share/containers/storage/overlay-images \
              /usr/share/containers/storage/overlay-layers \
              /usr/share/containers/storage/vfs-images \
