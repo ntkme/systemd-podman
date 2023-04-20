@@ -6,7 +6,6 @@ RUN printf '%s\n' \
            'install_weak_deps=False' \
            'tsflags=nodocs' \
   | tee /etc/dnf/dnf.conf \
- && microdnf update \
  && microdnf install systemd \
  && printf '%s\n' \
            '[main]' \
