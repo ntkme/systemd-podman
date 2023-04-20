@@ -1,4 +1,4 @@
-FROM registry.fedoraproject.org/fedora-minimal:37
+FROM registry.fedoraproject.org/fedora-minimal:38
 
 RUN printf '%s\n' \
            '[main]' \
