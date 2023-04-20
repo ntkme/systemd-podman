@@ -13,13 +13,6 @@ RUN printf '%s\n' \
            'tsflags=nodocs' \
   | tee /etc/dnf/dnf.conf \
  && microdnf install podman \
- && printf '%s\n' \
-           '[main]' \
-           'assumeyes=True' \
-           'install_weak_deps=False' \
-           'tsflags=nodocs' \
-  | tee /etc/dnf/dnf.conf \
- && microdnf install runc \
  && microdnf clean all \
  && rm -rf /etc/dnf/dnf.conf /var/cache/yum \
  && ln -sf multi-user.target /lib/systemd/system/default.target \
@@ -45,20 +38,6 @@ RUN printf '%s\n' \
            'ExecStart=/usr/bin/sed -i -e '\''s/^cgroup_manager[[:space:]]*=.*$/cgroup_manager = "systemd"/g'\'' -e '\''s/^events_logger[[:space:]]*=.*$/events_logger = "journald"/g'\'' /etc/containers/containers.conf' \
   | tee /lib/systemd/system/containers-engine-systemd.service \
  && ln -s ../containers-engine-systemd.service /lib/systemd/system/sysinit.target.wants/containers-engine-systemd.service \
- && printf '%s\n' \
-           '[Unit]' \
-           'DefaultDependencies=no' \
-           'Conflicts=shutdown.target' \
-           'After=local-fs.target containers-engine-systemd.service' \
-           'Before=sysinit.target shutdown.target' \
-           'RefuseManualStop=yes' \
-           'ConditionPathExists=!/proc/self/setgroups' \
-           '[Service]' \
-           'Type=oneshot' \
-           'RemainAfterExit=yes' \
-           'ExecStart=/usr/bin/sed -i -e '\''s/^runtime[[:space:]]*=.*$/runtime = "runc"/g'\'' /etc/containers/containers.conf' \
-  | tee /lib/systemd/system/containers-engine-runtime-runc.service \
- && ln -s ../containers-engine-runtime-runc.service /lib/systemd/system/sysinit.target.wants/containers-engine-runtime-runc.service \
  && printf '%s\n' \
            '[Unit]' \
            'DefaultDependencies=no' \
