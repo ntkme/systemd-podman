@@ -54,7 +54,6 @@ RUN printf '%s\n' \
  && ln -s ../containers-storage-overlayfs.service /lib/systemd/system/sysinit.target.wants/containers-storage-overlayfs.service \
  && sed -e 's/^#cgroup_manager[[:space:]]*=.*$/cgroup_manager = "cgroupfs"/g' \
         -e 's/^#events_logger[[:space:]]*=.*$/events_logger = "file"/g' \
-        -e 's/^#runtime[[:space:]]*=.*$/runtime = "crun"/g' \
         /usr/share/containers/containers.conf \
   | tee /etc/containers/containers.conf \
  && sed -e '/^#mount_program[[:space:]]*=/s/^#//g' \
