@@ -1,6 +1,7 @@
 FROM registry.fedoraproject.org/fedora-minimal:38
 
-RUN printf '%s\n' \
+RUN mv /etc/dnf/dnf.conf /etc/dnf/dnf.conf.bak \
+ && printf '%s\n' \
            '[main]' \
            'assumeyes=True' \
            'install_weak_deps=False' \
@@ -15,6 +16,7 @@ RUN printf '%s\n' \
  && microdnf install podman \
  && microdnf clean all \
  && rm -rf /etc/dnf/dnf.conf /var/cache/yum \
+ && mv /etc/dnf/dnf.conf.bak /etc/dnf/dnf.conf \
  && ln -sf multi-user.target /lib/systemd/system/default.target \
  && ln -sf dbus-broker.service /lib/systemd/system/dbus.service \
  && ln -sf ../dbus.socket /lib/systemd/system/sockets.target.wants/dbus.socket \
