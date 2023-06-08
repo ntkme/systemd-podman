@@ -3,7 +3,7 @@ FROM registry.fedoraproject.org/fedora-minimal:38
 RUN microdnf install --assumeyes --no-docs --setopt=install_weak_deps=False systemd \
  && microdnf install --assumeyes --no-docs podman \
  && microdnf clean all \
- && rm -rf /var/cache/yum \
+ && rm -rf /var/cache/libdnf5 \
  && ln -sf multi-user.target /lib/systemd/system/default.target \
  && ln -sf dbus-broker.service /lib/systemd/system/dbus.service \
  && ln -sf ../dbus.socket /lib/systemd/system/sockets.target.wants/dbus.socket \
