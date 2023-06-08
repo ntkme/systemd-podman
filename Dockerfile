@@ -1,22 +1,9 @@
 FROM registry.fedoraproject.org/fedora-minimal:38
 
-RUN mv /etc/dnf/dnf.conf /etc/dnf/dnf.conf.bak \
- && printf '%s\n' \
-           '[main]' \
-           'assumeyes=True' \
-           'install_weak_deps=False' \
-           'tsflags=nodocs' \
-  | tee /etc/dnf/dnf.conf \
- && microdnf install systemd \
- && printf '%s\n' \
-           '[main]' \
-           'assumeyes=True' \
-           'tsflags=nodocs' \
-  | tee /etc/dnf/dnf.conf \
- && microdnf install podman \
+RUN microdnf install --assumeyes --no-docs --setopt=install_weak_deps=False systemd \
+ && microdnf install --assumeyes --no-docs podman \
  && microdnf clean all \
- && rm -rf /etc/dnf/dnf.conf /var/cache/yum \
- && mv /etc/dnf/dnf.conf.bak /etc/dnf/dnf.conf \
+ && rm -rf /var/cache/yum \
  && ln -sf multi-user.target /lib/systemd/system/default.target \
  && ln -sf dbus-broker.service /lib/systemd/system/dbus.service \
  && ln -sf ../dbus.socket /lib/systemd/system/sockets.target.wants/dbus.socket \
