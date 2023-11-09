@@ -1,4 +1,4 @@
-FROM registry.fedoraproject.org/fedora-minimal:38
+FROM registry.fedoraproject.org/fedora-minimal:39
 
 RUN microdnf install --assumeyes --no-docs --setopt=install_weak_deps=False systemd util-linux \
  && microdnf install --assumeyes --no-docs podman \
