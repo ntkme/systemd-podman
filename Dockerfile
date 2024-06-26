@@ -1,6 +1,6 @@
 FROM registry.fedoraproject.org/fedora-minimal:40
 
-RUN microdnf install --assumeyes --no-docs --setopt=install_weak_deps=False systemd util-linux \
+RUN microdnf install --assumeyes --no-docs --setopt=install_weak_deps=False fuse-overlayfs systemd util-linux \
  && microdnf install --assumeyes --no-docs podman \
  && microdnf clean all \
  && rm -rf /var/cache/* \
