@@ -1,7 +1,7 @@
 FROM registry.fedoraproject.org/fedora-minimal:40
 
-RUN microdnf install --assumeyes --no-docs --setopt=install_weak_deps=False fuse-overlayfs systemd util-linux \
- && microdnf install --assumeyes --no-docs podman \
+RUN microdnf install --assumeyes --nodocs --setopt=install_weak_deps=False fuse-overlayfs systemd util-linux \
+ && microdnf install --assumeyes --nodocs podman \
  && microdnf clean all \
  && rm -rf /var/cache/* \
  && ln -sf multi-user.target /lib/systemd/system/default.target \
