@@ -1,4 +1,4 @@
-FROM registry.fedoraproject.org/fedora-minimal:42
+FROM registry.fedoraproject.org/fedora-minimal:43
 
 RUN microdnf install --assumeyes --nodocs --setopt=install_weak_deps=False fuse-overlayfs systemd util-linux \
  && microdnf install --assumeyes --nodocs podman \
